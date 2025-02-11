@@ -24,10 +24,7 @@ let persons = [
 ]
 
 const generateId = () => {
-    const maxId = persons.length > 0 
-    ? Math.max(...persons.map(person => Number(person.id))) 
-    : 0;
-    return String(maxId + 1);
+    return String(Math.floor(Math.random() * 1000000000000));
 }
 
 const checkNameExists = (name) => {
