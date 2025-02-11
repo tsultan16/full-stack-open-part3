@@ -30,6 +30,13 @@ const generateId = () => {
     return String(maxId + 1);
 }
 
+const checkNameExists = (name) => {
+    if (persons.find(person => person.name.toLowerCase() === name.toLowerCase())) {
+        return true;
+    }
+    return false;
+} 
+
 
 const app = express();
 app.use(express.json());
@@ -65,9 +72,17 @@ app.post('/api/persons', (request, response) => {
         const missing = [];
         if (!body.name) missing.push("name");
         if (!body.number) missing.push("number");
+        console.log(`Error in POST, attributes missing: ${missing.join(", ")}`);
         return response.status(400).json({ 
         error: `attributes missing: ${missing.join(", ")}` 
       })
+    }
+
+    if (checkNameExists(body.name)) {
+        console.log(`Error in POST, ${body.name} already exists in phonebook`);
+        return response.status(400).json({ 
+        error: `${body.name} already exists in phonebook` 
+        })
     }
   
     const person = {
@@ -77,8 +92,8 @@ app.post('/api/persons', (request, response) => {
     }
   
     persons = persons.concat(person)
-  
     response.json(person)
+    console.log(`Added ${person.name}`)
 })
   
 
@@ -96,6 +111,7 @@ app.delete("/api/persons/:id", (request, response) => {
     const id = request.params.id;
     persons = persons.filter(person => person.id !== id);
     response.status(204).end();
+    console.log(`Deleted id ${id}`)
 });
 
 
