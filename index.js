@@ -35,11 +35,22 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (request, response) => {
-    response.send("<a href='http://localhost:3001/api'>/api</a>")
+    response.send(`
+        <p><a href='http://localhost:3001/info'>/info</a></p>
+        <p><a href='http://localhost:3001/api'>/api</a></p>`)
+});
+
+app.get("/info", (request, response) => {
+    response.send(`
+        <p>Phonebook has info for ${persons.length} people</p>
+        <p>${new Date()}</p>
+        <p><a href='http://localhost:3001/'>go back</a></p>`)
 });
 
 app.get("/api", (request, response) => {
-    response.send("<a href='http://localhost:3001/api/persons'>/persons</a>")
+    response.send(`
+        <p><a href='http://localhost:3001/api/persons'>/persons</a></p>
+        <p><a href='http://localhost:3001/'>go back</a></p>`)
 });
 
 app.get("/api/persons", (request, response) => {
