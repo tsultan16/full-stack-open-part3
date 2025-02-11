@@ -1,0 +1,24 @@
+{
+  "name": "phonebook_backend",
+  "version": "0.0.1",
+  "description": "My solutions for Full Stack open part 3 exercises",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsultan16/full-stack-open-part3.git"
+  },
+  "author": "Tanzid Sultan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsultan16/full-stack-open-part3/issues"
+  },
+  "homepage": "https://github.com/tsultan16/full-stack-open-part3#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
