@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 
 let persons = [
     { 
@@ -37,6 +38,8 @@ const checkNameExists = (name) => {
 
 const app = express();
 app.use(express.json());
+morgan.token('body', request => JSON.stringify(request.body)) // create custom morgan token for logging body
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 app.get("/", (request, response) => {
     response.send(`
@@ -108,9 +111,14 @@ app.delete("/api/persons/:id", (request, response) => {
     const id = request.params.id;
     persons = persons.filter(person => person.id !== id);
     response.status(204).end();
-    console.log(`Deleted id ${id}`)
+    console.log(`Delete id ${id}`)
 });
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint);
 
 
 const PORT = 3001;
