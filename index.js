@@ -23,15 +23,6 @@ app.use(cors());
 morgan.token('body', request => JSON.stringify(request.body)) // create custom morgan token for logging body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-
-// app.get("/", (request, response) => {
-//     const baseUrl = request.protocol + "://" + request.get("host");
-
-//     response.send(`
-//         <p><a href='${baseUrl}/info'>/info</a></p>
-//         <p><a href='${baseUrl}/api'>/api</a></p>`)
-// });
-
 app.get("/info", (request, response) => {
     const baseUrl = request.protocol + "://" + request.get("host");
 
@@ -71,16 +62,6 @@ app.post('/api/persons', (request, response, next) => {
     const body = request.body
     console.log(body);
 
-    if (!body.name || !body.number) {
-        const missing = [];
-        if (!body.name) missing.push("name");
-        if (!body.number) missing.push("number");
-        console.log(`Error in POST, attributes missing: ${missing.join(", ")}`);
-        return response.status(400).json({ 
-        error: `attributes missing: ${missing.join(", ")}` 
-      })
-    }
-    
     const person = new Person({
         name: body.name,
         number: body.number,
@@ -122,14 +103,14 @@ app.delete("/api/persons/:id", (request, response, next) => {
 
 app.put("/api/persons/:id", (request, response, next) => {
     const id = request.params.id;
-    const body = request.body
+    const { name, number } = request.body
 
     const person = {
-        name: body.name,
-        number: body.number,
+        name,
+        number,
     };
 
-    Person.findByIdAndUpdate(id, person, { new: true })
+    Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
         console.log(`Updated ${updatedPerson.name} number ${updatedPerson.number}`);
         response.json(updatedPerson)
@@ -150,12 +131,13 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message);
     if (error.name === "CastError") {
         response.status(400).send({ error: 'malformed id' });
+    } else if(error.name === "ValidationError") {
+        response.status(400).send({ error: error.message });
     }
     next(error)
 }
 
 app.use(errorHandler);
-
 
 
 const PORT = process.env.PORT || 3001;
