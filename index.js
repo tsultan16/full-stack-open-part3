@@ -43,13 +43,16 @@ app.use(express.json());
 morgan.token('body', request => JSON.stringify(request.body)) // create custom morgan token for logging body
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-app.get("/", (request, response) => {
-    const baseUrl = request.protocol + "://" + request.get("host");
+// add static middleware to hook up the React frontend
+app.use(express.static('dist'));
 
-    response.send(`
-        <p><a href='${baseUrl}/info'>/info</a></p>
-        <p><a href='${baseUrl}/api'>/api</a></p>`)
-});
+// app.get("/", (request, response) => {
+//     const baseUrl = request.protocol + "://" + request.get("host");
+
+//     response.send(`
+//         <p><a href='${baseUrl}/info'>/info</a></p>
+//         <p><a href='${baseUrl}/api'>/api</a></p>`)
+// });
 
 app.get("/info", (request, response) => {
     const baseUrl = request.protocol + "://" + request.get("host");
