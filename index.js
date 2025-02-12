@@ -44,22 +44,28 @@ morgan.token('body', request => JSON.stringify(request.body)) // create custom m
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 app.get("/", (request, response) => {
+    const baseUrl = request.protocol + "://" + request.get("host");
+
     response.send(`
-        <p><a href='http://localhost:3001/info'>/info</a></p>
-        <p><a href='http://localhost:3001/api'>/api</a></p>`)
+        <p><a href='${baseUrl}/info'>/info</a></p>
+        <p><a href='${baseUrl}/api'>/api</a></p>`)
 });
 
 app.get("/info", (request, response) => {
+    const baseUrl = request.protocol + "://" + request.get("host");
+
     response.send(`
         <p>Phonebook has info for ${persons.length} people</p>
         <p>${new Date()}</p>
-        <p><a href='http://localhost:3001/'>go back</a></p>`)
+        <p><a href='${baseUrl}/'>go back</a></p>`)
 });
 
 app.get("/api", (request, response) => {
+    const baseUrl = request.protocol + "://" + request.get("host");
+
     response.send(`
-        <p><a href='http://localhost:3001/api/persons'>/persons</a></p>
-        <p><a href='http://localhost:3001/'>go back</a></p>`)
+        <p><a href='${baseUrl}/api/persons'>/persons</a></p>
+        <p><a href='${baseUrl}/'>go back</a></p>`)
 });
 
 app.get("/api/persons", (request, response) => {
